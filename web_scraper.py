@@ -9,29 +9,22 @@ class WebScraper:
 
     def aspects(self, filename, page=None, write=False):
         """Scraper for https://www.aspects-holidays.co.uk/"""
-        
         url = 'https://www.aspects-holidays.co.uk/cottages/in/newquay/start/2021-12-25/sleeps/4/los/7/sorting/price-ascending'
-        
-        mode, url = self._set('asp', url, page, write)
+        if write:
+            self.edit_file(filename, 'w')        
+        else:
+            url = self._set('asp', url, page)
         response, soup = self._get_response(url)
-        
-        with open(filename, mode, newline='') as csv_file:
-            csv_writer = csv.writer(csv_file)
-            if write:
-                csv_writer.writerow(['name', 'price', 'accommodation', 'rooms'])
-            title = soup.find()
-            for item in soup.select('.property-box-inner'):
-                try:
-                    name = item.select('.property-name')[0].get_text().strip().split('\r')[0]
-                    price = item.select('.property-price')[0].get_text().strip().split(' ')[0]
-                    accommodation = 'Aspects property' # No Accommodation type given
-                    rooms = item.select('.property-toptrumps')[0].get_text().strip()
+        for item in soup.select('.property-box-inner'):
+            try:
+                self.name = item.select('.property-name')[0].get_text().strip().split('\r')[0]
+                self.price = item.select('.property-price')[0].get_text().strip().split(' ')[0]
+                self.accommodation = 'Aspects property' # No Accommodation type given
+                self.rooms = item.select('.property-toptrumps')[0].get_text().strip()
+                self.edit_file(filename, 'a')
+            except Exception as e:
+                print(e)
 
-                except Exception as e:
-                    print(e)
-                
-                csv_writer.writerow([name, price, accommodation, rooms])
-    
     def airbnb(self, filename, offset=None, write=False):
         """Scraper for https://www.airbnb.co.uk/"""
         
@@ -48,7 +41,7 @@ class WebScraper:
                 try:
                     name = item.a['aria-label']
                     price = item.select('._ebe4pze')[0].get_text().strip().split(' ')[0]
-                    accommodation = item.select('._167qordg')[0].get_text().strip()
+                    accommodation = item.select('._b14dlit')[0].get_text().strip()
                     rooms = item.select('._kqh46o')[0].get_text().strip()
                 except Exception as e:
                     print(e)
@@ -90,23 +83,25 @@ class WebScraper:
         soup = BeautifulSoup(response.content, 'lxml')
         return response, soup
 
-    def _set(self, site, url, page, write):
+    def _set(self, site, url, page):
         """Sets mode to write or append and sets append url"""
-        
-        if write:
-            mode = 'w'
-        else:
-            mode = 'a'
-            if site == 'asp':
-                url = f'{url}/page/{page}'
-            elif site == 'air':
-                url = f'{url}&items_offset={page}&section_offset=3'
-            elif site == 'boo':
-                url = 'https://www.booking.com/searchresults.en-gb.html?aid=304142&label=gen173nr-1FCAEoggI46AdIM1gEaFCIAQGYAQm4ARfIAQ_YAQHoAQH4AQuIAgGoAgO4Aq7B__4FwAIB0gIkNTIyZjhlMDItNWM3ZC00YzQ5LThlYzAtYmEzN2QyMzk0Zjlj2AIG4AIB&sid=333f4c345becd6ba8ddebb42f1635dc2&tmpl=searchresults&ac_click_type=b&ac_position=0&checkin_month=12&checkin_monthday=25&checkin_year=2021&checkout_month=1&checkout_monthday=1&checkout_year=2022&class_interval=1&dest_id=-2604050&dest_type=city&from_sf=1&group_adults=4&group_children=0&iata=NQY&label_click=undef&nflt=ht_id%3D201%3Bht_id%3D220%3Bht_id%3D213%3B&no_rooms=2&order=price&percent_htype_apt=1&raw_dest_type=city&room1=A%2CA&room2=A%2CA&sb_price_type=total&search_selected=1&shw_aparth=1&slp_r_match=0&srpvid=fc7a04b25c970163&ss=Newquay%2C%20Cornwall%2C%20United%20Kingdom&ss_raw=newq&ssb=empty&top_ufis=1&rows=25&offset='
-                url = f'{url}{page}'
+        if site == 'asp':
+            url = f'{url}/page/{page}'
+        elif site == 'air':
+            url = f'{url}&items_offset={page}&section_offset=3'
+        elif site == 'boo':
+            url = 'https://www.booking.com/searchresults.en-gb.html?aid=304142&label=gen173nr-1FCAEoggI46AdIM1gEaFCIAQGYAQm4ARfIAQ_YAQHoAQH4AQuIAgGoAgO4Aq7B__4FwAIB0gIkNTIyZjhlMDItNWM3ZC00YzQ5LThlYzAtYmEzN2QyMzk0Zjlj2AIG4AIB&sid=333f4c345becd6ba8ddebb42f1635dc2&tmpl=searchresults&ac_click_type=b&ac_position=0&checkin_month=12&checkin_monthday=25&checkin_year=2021&checkout_month=1&checkout_monthday=1&checkout_year=2022&class_interval=1&dest_id=-2604050&dest_type=city&from_sf=1&group_adults=4&group_children=0&iata=NQY&label_click=undef&nflt=ht_id%3D201%3Bht_id%3D220%3Bht_id%3D213%3B&no_rooms=2&order=price&percent_htype_apt=1&raw_dest_type=city&room1=A%2CA&room2=A%2CA&sb_price_type=total&search_selected=1&shw_aparth=1&slp_r_match=0&srpvid=fc7a04b25c970163&ss=Newquay%2C%20Cornwall%2C%20United%20Kingdom&ss_raw=newq&ssb=empty&top_ufis=1&rows=25&offset='
+            url = f'{url}{page}'
 
-        return mode, url
+        return url
 
+    def edit_file(self, filename, mode):
+        with open(filename, mode, newline='') as csv_file:
+            csv_writer = csv.writer(csv_file)
+            if mode == 'w':
+                csv_writer.writerow(['name', 'price', 'accommodation', 'rooms'])
+            elif mode == 'a':
+                csv_writer.writerow([self.name, self.price, self.accommodation, self.rooms])
 
 
 
@@ -114,17 +109,17 @@ f = 'data/test.csv'
 print(f'Writing to {f}..')
 
 ws = WebScraper()
-ws.booking(f, write=True)
-print('\nAppending booking.com data')
-for i in tqdm(range(25, 51, 25)): # Offset starts at 25 amd increases by 25 
-    ws.booking(f, offset=i)
 
-# ws.aspects(f, write=True)
+# ws.booking(f, write=True)
+# for i in tqdm(range(25, 126, 25)): # Offset starts at 25 amd increases by 25 
+#     ws.booking(f, offset=i)
+
+ws.aspects(f, write=True)
 print('\n\nAppending aspects.com data')
 for i in tqdm(range(2, 4)):
     ws.aspects(f, i)
 
 # ws.airbnb(f, write=True)
-print('\n\nAppending airbnb.com data')
-for i in tqdm(range(20, 181, 20)): # Offset starts at 20 amd increases by 20
-    ws.airbnb(f, offset=i)
+# print('\n\nAppending airbnb.com data')
+# for i in tqdm(range(20, 181, 20)): # Offset starts at 20 amd increases by 20
+#     ws.airbnb(f, offset=i)
