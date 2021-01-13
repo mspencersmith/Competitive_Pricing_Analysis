@@ -15,9 +15,10 @@ class WebScraper:
         else:
             self._set('asp', page)
         response, soup = self._get_response(self.url)
+        
         for item in soup.select('.property-box-inner'):
             try:
-                self.get_attr_asp(item)
+                self.get_attr_asp(item) # Gets aspects attributes
                 self._edit_file(filename, 'a')
             except UnicodeEncodeError as e:
                 print(e)
@@ -36,7 +37,7 @@ class WebScraper:
         
         for item in soup.select('._8s3ctt'):
             try:
-                self.get_attr_air(item)
+                self.get_attr_air(item) # Gets airbnb attributes
                 self._edit_file(filename, 'a')
             except UnicodeEncodeError as e:
                 print(e)
@@ -46,27 +47,21 @@ class WebScraper:
 
     def booking(self, filename, offset=None, write=False):
         """Scraper for https://booking.com/"""
-        url = 'https://www.booking.com/searchresults.en-gb.html?aid=304142&label=gen173nr-1FCAEoggI46AdIM1gEaFCIAQGYAQm4ARfIAQ_YAQHoAQH4AQuIAgGoAgO4Aq7B__4FwAIB0gIkNTIyZjhlMDItNWM3ZC00YzQ5LThlYzAtYmEzN2QyMzk0Zjlj2AIG4AIB&sid=333f4c345becd6ba8ddebb42f1635dc2&tmpl=searchresults&ac_click_type=b&ac_position=0&checkin_month=12&checkin_monthday=25&checkin_year=2021&checkout_month=1&checkout_monthday=1&checkout_year=2022&class_interval=1&dest_id=-2604050&dest_type=city&dtdisc=0&from_sf=1&group_adults=4&group_children=0&iata=NQY&inac=0&index_postcard=0&label_click=undef&no_rooms=2&order=price&percent_htype_apt=1&postcard=0&raw_dest_type=city&room1=A%2CA&room2=A%2CA&sb_price_type=total&search_selected=1&shw_aparth=1&slp_r_match=0&srpvid=af3004af35b70105&ss=Newquay%2C%20Cornwall%2C%20United%20Kingdom&ss_all=0&ss_raw=newq&ssb=empty&sshis=0&top_ufis=1&nflt=ht_id%3D201%3Bht_id%3D220%3Bht_id%3D213%3B&rsf='
+        self.url = 'https://www.booking.com/searchresults.en-gb.html?aid=304142&label=gen173nr-1FCAEoggI46AdIM1gEaFCIAQGYAQm4ARfIAQ_YAQHoAQH4AQuIAgGoAgO4Aq7B__4FwAIB0gIkNTIyZjhlMDItNWM3ZC00YzQ5LThlYzAtYmEzN2QyMzk0Zjlj2AIG4AIB&sid=333f4c345becd6ba8ddebb42f1635dc2&tmpl=searchresults&ac_click_type=b&ac_position=0&checkin_month=12&checkin_monthday=25&checkin_year=2021&checkout_month=1&checkout_monthday=1&checkout_year=2022&class_interval=1&dest_id=-2604050&dest_type=city&dtdisc=0&from_sf=1&group_adults=4&group_children=0&iata=NQY&inac=0&index_postcard=0&label_click=undef&no_rooms=2&order=price&percent_htype_apt=1&postcard=0&raw_dest_type=city&room1=A%2CA&room2=A%2CA&sb_price_type=total&search_selected=1&shw_aparth=1&slp_r_match=0&srpvid=af3004af35b70105&ss=Newquay%2C%20Cornwall%2C%20United%20Kingdom&ss_all=0&ss_raw=newq&ssb=empty&sshis=0&top_ufis=1&nflt=ht_id%3D201%3Bht_id%3D220%3Bht_id%3D213%3B&rsf='
+        if write:
+            self._edit_file(filename, 'w')
+        else:
+            self._set('boo', offset)
+        response, soup = self._get_response(self.url)
         
-        mode, url = self._set('boo', url, offset, write)
-        response, soup = self._get_response(url)
-        
-        with open(filename, mode, newline='') as csv_file:
-            csv_writer = csv.writer(csv_file)
-            if write:
-                csv_writer.writerow(['name', 'price', 'accommodation', 'rooms'])
-            for item in soup.select('.sr_property_block'):
-                rooms = ''
-                try:
-                    name = item.select('.sr-hotel__name')[0].get_text().strip()
-                    price = item.select('.bui-price-display__value')[0].get_text().strip()
-                    accommodation = item.select('.room_link')[0].get_text().strip()
-                    for i in item.select('.c-unit-configuration__item'): # Rooms is given as a list
-                        rooms = rooms + i.get_text().strip() + ' '
-                except Exception as e:
-                    print(e)
-            
-                csv_writer.writerow([name, price, accommodation, rooms])
+        for item in soup.select('.sr_property_block'):
+            try:
+                self.get_attr_boo(item) # Gets booking.com attributes
+                self._edit_file(filename, 'a')
+            except UnicodeEncodeError as e:
+                print(e)
+                self.get_attr_boo(item)
+                self._edit_file(filename, 'a', encode=True)
     
     def _get_response(self, url):
         """"Gets headers and response"""
@@ -83,7 +78,7 @@ class WebScraper:
         elif site == 'air':
             self.url = f'{self.url}&items_offset={page}&section_offset=3'
         elif site == 'boo':
-            self.url = 'https://www.booking.com/searchresults.en-gb.html?aid=304142&label=gen173nr-1FCAEoggI46AdIM1gEaFCIAQGYAQm4ARfIAQ_YAQHoAQH4AQuIAgGoAgO4Aq7B__4FwAIB0gIkNTIyZjhlMDItNWM3ZC00YzQ5LThlYzAtYmEzN2QyMzk0Zjlj2AIG4AIB&sid=333f4c345becd6ba8ddebb42f1635dc2&tmpl=searchresults&ac_click_type=b&ac_position=0&checkin_month=12&checkin_monthday=25&checkin_year=2021&checkout_month=1&checkout_monthday=1&checkout_year=2022&class_interval=1&dest_id=-2604050&dest_type=city&from_sf=1&group_adults=4&group_children=0&iata=NQY&label_click=undef&nflt=ht_id%3D201%3Bht_id%3D220%3Bht_id%3D213%3B&no_rooms=2&order=price&percent_htype_apt=1&raw_dest_type=city&room1=A%2CA&room2=A%2CA&sb_price_type=total&search_selected=1&shw_aparth=1&slp_r_match=0&srpvid=fc7a04b25c970163&ss=Newquay%2C%20Cornwall%2C%20United%20Kingdom&ss_raw=newq&ssb=empty&top_ufis=1&rows=25&offset='
+            self.url = 'https://www.booking.com/searchresults.en-gb.html?aid=304142&label=gen173nr-1FCAEoggI46AdIM1gEaFCIAQGYAQm4ARfIAQ_YAQHoAQH4AQuIAgGoAgO4Aq7B__4FwAIB0gIkNTIyZjhlMDItNWM3ZC00YzQ5LThlYzAtYmEzN2QyMzk0Zjlj2AIG4AIB&tmpl=searchresults&ac_click_type=b&ac_position=0&checkin_month=12&checkin_monthday=25&checkin_year=2021&checkout_month=1&checkout_monthday=1&checkout_year=2022&class_interval=1&dest_id=-2604050&dest_type=city&from_sf=1&group_adults=4&group_children=0&iata=NQY&label_click=undef&nflt=ht_id%3D201%3Bht_id%3D220%3Bht_id%3D213%3B&no_rooms=2&order=price&percent_htype_apt=1&raw_dest_type=city&room1=A%2CA&room2=A%2CA&sb_price_type=total&search_selected=1&shw_aparth=1&slp_r_match=0&srpvid=0f5708e2731a0009&ss=Newquay%2C%20Cornwall%2C%20United%20Kingdom&ss_raw=newq&ssb=empty&top_ufis=1&rows=25&offset='
             self.url = f'{self.url}{page}'
 
     def _edit_file(self, filename, mode, encode=False):
@@ -113,7 +108,14 @@ class WebScraper:
         self.accommodation = item.select('._b14dlit')[0].get_text().strip()
         self.rooms = item.select('._kqh46o')[0].get_text().strip()
 
-
+    def get_attr_boo(self, item):
+        """Gets attributes for booking.com"""
+        self.name = item.select('.sr-hotel__name')[0].get_text().strip()
+        self.price = item.select('.bui-price-display__value')[0].get_text().strip()
+        self.accommodation = item.select('.room_link')[0].get_text().strip()
+        self.rooms = ''
+        for i in item.select('.c-unit-configuration__item'): # Rooms is given as a list
+            self.rooms = self.rooms + i.get_text().strip() + ' '
 
 
 f = 'data/test.csv'
@@ -121,14 +123,14 @@ print(f'Writing to {f}..')
 
 ws = WebScraper()
 
-# ws.booking(f, write=True)
-# for i in tqdm(range(25, 126, 25)): # Offset starts at 25 amd increases by 25 
-#     ws.booking(f, offset=i)
+ws.booking(f, write=True)
+for i in tqdm(range(25, 51, 25)): # Offset starts at 25 and increases by 25 
+    ws.booking(f, offset=i)
 
-ws.aspects(f, write=True)
-print('\n\nAppending aspects.com data')
-for i in tqdm(range(2, 4)):
-    ws.aspects(f, i)
+# ws.aspects(f, write=True)
+# print('\n\nAppending aspects.com data')
+# for i in tqdm(range(2, 4)):
+#     ws.aspects(f, i)
 
 # ws.airbnb(f, write=True)
 # print('\n\nAppending airbnb.com data')
