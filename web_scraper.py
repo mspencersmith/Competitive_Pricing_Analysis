@@ -13,6 +13,7 @@ class WebScraper:
         self.filename = filename
         self.page = page
         self.write = write
+        self.noMorePages = False
         if page:        
             self.create_url() #Creates url for extra pages
         self.scrape()
@@ -23,15 +24,18 @@ class WebScraper:
             self.edit_file('w') # Writes header
 
         response, soup = self.get_response()
-        
-        for item in soup.select(self.block): # Selects block of html attributes are stored
-            try:
-                self.get_attr(item)
-                self.edit_file('a') # Appends to file
-            except UnicodeEncodeError as e:
-                print(e)
-                self.get_attr(item)
-                self.edit_file('a', encode=True) # Appends to file with encoding
+        if soup.select(self.block):
+            for item in soup.select(self.block): # Selects block of html where attributes are stored
+                try:
+                    self.get_attr(item)
+                    self.edit_file('a') # Appends to file
+                except UnicodeEncodeError as e:
+                    print(e)
+                    self.get_attr(item)
+                    self.edit_file('a', encode=True) # Appends to file with encoding
+        else:
+            self.noMorePages = True
+
 
     def create_url(self):
         """Creates url for extra pages"""
@@ -71,11 +75,11 @@ class WebScraper:
         return response, soup
    
     def get_attr(self, item):
-        if self.block == '.property-box-inner':
+        if self.website == 'aspects':
             self.get_attr_asp(item)
-        elif self.block == '._8s3ctt':
+        elif self.website == 'airbnb':
             self.get_attr_air(item)
-        elif self.block == '.sr_property_block':
+        elif self.website == 'booking':
             self.get_attr_boo(item)
 
     def get_attr_asp(self, item):
