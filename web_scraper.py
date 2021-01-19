@@ -1,4 +1,5 @@
 import csv
+import re
 import requests
 
 from bs4 import BeautifulSoup
@@ -61,11 +62,15 @@ class WebScraper:
         return year, month, day
 
     def page_check(self, soup):
+        """Checks whether page is in web page range"""
         if self.website == 'airbnb': # Checks if Airbnb page is in range
             check = '._1h559tl'
+            total_pattern = re.compile(r'(\d+)') # Only digits
             for item in soup.select(check):
-                count = int(item.get_text().split(' ')[0])
-                total = int(item.get_text().split(' ')[4])
+                count = int(item.get_text().split(' ')[0]) # Count of items so far
+                total = item.get_text().split(' ')[4] # Total number of items
+                total = total_pattern.search(total) # Ensures there is no +
+                total = int(total.group(1))
                 if count > total:
                     self.MorePages = False
         else:
