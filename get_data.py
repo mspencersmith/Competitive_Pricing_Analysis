@@ -7,7 +7,6 @@ import json
 start = time.time()
 
 filename = 'data/pricing_data.csv'
-print(f'Writing to {filename}..')
 
 with open('dates.json') as f:
     dates = json.load(f)
@@ -27,23 +26,24 @@ for checkin, checkout in zip(checkins, checkouts):
     WebScraper(filename, asp_url, 'aspects', checkin) # First page
     for i in tqdm(range(2, 101)):
         asp = WebScraper(filename, asp_url, 'aspects', checkin, page=i)
-        if asp.noMorePages:
+        if not asp.MorePages:
             break
 
     print(f'\n\nAppending airbnb.com data for {checkin}')
     WebScraper(filename, air_url, 'airbnb', checkin, checkout) # First page
     for i in tqdm(range(20, 2001, 20)): # Offset starts at 20 amd increases by 20
         air = WebScraper(filename, air_url, 'airbnb', checkin, checkout, i)
-        if air.noMorePages:
+        if not air.MorePages:
             break
 
     print(f'\n\nAppending booking.com data for {checkin}')
     WebScraper(filename, boo_url, 'booking', checkin, checkout) # First page
     for i in tqdm(range(25, 2501, 25)): # Offset starts at 25 and increases by 25 
         boo = WebScraper(filename, boo_url, 'booking', checkin, checkout, i)
-        if boo.noMorePages:
+        if not boo.MorePages:
             break
-
+    
+    time.sleep(30)
 
 finish = time.time()
 secs = round((finish - start), 2)

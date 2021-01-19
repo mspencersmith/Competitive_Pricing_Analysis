@@ -14,20 +14,26 @@ class WebScraper:
         self.checkin = checkin
         self.checkout = checkout
         self.page = page
-        self.write = write
-        self.noMorePages = False
+        self.MorePages = True
+        if write:
+            self.edit_file('w') # Writes header
         if page:        
             self.create_url() #Creates url for extra pages
         self.scrape()
 
     def scrape(self):
         """Scrapes website outputs to csv"""
-        if self.write:
-            self.edit_file('w') # Writes header
+        soup = self.get_response()
+        if self.website == 'airbnb': # Checks if Airbnb page is in range
+            check = '._1h559tl'
+            for item in soup.select(check):
+                count = int(item.get_text().split(' ')[0])
+                total = int(item.get_text().split(' ')[4])
+                if count > total:
+                    self.MorePages = False
 
-        response, soup = self.get_response()
-        if soup.select(self.block):
-            for item in soup.select(self.block): # Selects block of html where attributes are stored
+        if soup.select(self.block): # Checks if Apects and Booking page is in range 
+            for item in soup.select(self.block): # Selects block of html where attributes are stored for all websites
                 try:
                     self.get_attr(item)
                     self.edit_file('a') # Appends to file
@@ -36,8 +42,7 @@ class WebScraper:
                     self.get_attr(item)
                     self.edit_file('a', encode=True) # Appends to file with encoding
         else:
-            self.noMorePages = True
-
+            self.MorePages = False
 
     def create_url(self):
         """Creates url for extra pages"""
@@ -89,7 +94,7 @@ class WebScraper:
             self.block = '._8s3ctt'
         elif self.website == 'booking':
             self.block = '.sr_property_block'
-        return response, soup
+        return soup
    
     def get_attr(self, item):
         if self.website == 'aspects':
