@@ -24,25 +24,16 @@ class WebScraper:
     def scrape(self):
         """Scrapes website outputs to csv"""
         soup = self.get_response()
-        if self.website == 'airbnb': # Checks if Airbnb page is in range
-            check = '._1h559tl'
-            for item in soup.select(check):
-                count = int(item.get_text().split(' ')[0])
-                total = int(item.get_text().split(' ')[4])
-                if count > total:
-                    self.MorePages = False
+        self.page_check(soup) # Checks if page number is in web page range
 
-        if soup.select(self.block): # Checks if Apects and Booking page is in range 
-            for item in soup.select(self.block): # Selects block of html where attributes are stored for all websites
-                try:
-                    self.get_attr(item)
-                    self.edit_file('a') # Appends to file
-                except UnicodeEncodeError as e:
-                    print(e)
-                    self.get_attr(item)
-                    self.edit_file('a', encode=True) # Appends to file with encoding
-        else:
-            self.MorePages = False
+        for item in soup.select(self.block): # Selects block of html where attributes are stored for all websites
+            try:
+                self.get_attr(item)
+                self.edit_file('a') # Appends to file
+            except UnicodeEncodeError as e:
+                print(e)
+                self.get_attr(item)
+                self.edit_file('a', encode=True) # Appends to file with encoding
 
     def create_url(self):
         """Creates url for extra pages"""
@@ -68,6 +59,18 @@ class WebScraper:
         else:
             day = date[8:10]
         return year, month, day
+
+    def page_check(self, soup):
+        if self.website == 'airbnb': # Checks if Airbnb page is in range
+            check = '._1h559tl'
+            for item in soup.select(check):
+                count = int(item.get_text().split(' ')[0])
+                total = int(item.get_text().split(' ')[4])
+                if count > total:
+                    self.MorePages = False
+        else:
+            if not soup.select(self.block): # Checks if Apects and Booking page is in range
+                self.MorePages = False
 
     def edit_file(self, mode, encode=False):
         """Writes or appends to file"""
