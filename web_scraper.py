@@ -87,7 +87,7 @@ class WebScraper:
             with open(self.filename, mode, newline='') as csv_file:
                 csv_writer = csv.writer(csv_file)
                 if mode == 'w':
-                    csv_writer.writerow(['date', 'website', 'name', 'price', 'accommodation', 'rooms'])
+                    csv_writer.writerow(['date', 'website', 'name', '£_price', 'accommodation', 'rooms'])
                 elif mode == 'a':
                     csv_writer.writerow([self.checkin, self.website, self.name, self.price, self.accommodation, self.rooms])
 
@@ -116,7 +116,7 @@ class WebScraper:
         """Gets attributes for aspects"""
         self.name = item.select('.property-name')[0].get_text().strip().split('\r')[0]
         self.price = item.select('.property-price')[0].get_text().strip().split(' ')[0]
-        self.accommodation = 'Aspects property' # No Accommodation type given
+        self.accommodation = None # No Accommodation type given
         self.rooms = item.select('.property-toptrumps')[0].get_text().strip()
 
     def get_attr_air(self, item):
