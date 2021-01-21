@@ -7,6 +7,7 @@ import json
 start = time.time()
 
 filename = 'data/pricing_data.csv'
+WebScraper.edit_file('_', filename, 'w')
 
 with open('dates.json') as f:
     dates = json.load(f)

@@ -8,7 +8,7 @@ from tqdm import tqdm
 class WebScraper:
     """Scrapes holiday websites and returns name, price, type of accommodation, number of rooms"""
 
-    def __init__(self, filename, url, website, checkin, checkout=None, page=None, write=False):
+    def __init__(self, filename, url, website, checkin, checkout=None, page=None):
         self.url = url
         self.website = website
         self.filename = filename
@@ -16,8 +16,6 @@ class WebScraper:
         self.checkout = checkout
         self.page = page
         self.MorePages = True
-        if write:
-            self.edit_file('w') # Writes header
         if page:        
             self.create_url() #Creates url for extra pages
         self.scrape()
@@ -30,11 +28,11 @@ class WebScraper:
         for item in soup.select(self.block): # Selects block of html where attributes are stored for all websites
             try:
                 self.get_attr(item)
-                self.edit_file('a') # Appends to file
+                self.edit_file(self.filename, 'a') # Appends to file
             except UnicodeEncodeError as e:
                 print(e)
                 self.get_attr(item)
-                self.edit_file('a', encode=True) # Appends to file with encoding
+                self.edit_file(self.filename, 'a', encode=True) # Appends to file with encoding
 
     def create_url(self):
         """Creates url for extra pages"""
@@ -77,17 +75,17 @@ class WebScraper:
             if not soup.select(self.block): # Checks if Apects and Booking page is in range
                 self.MorePages = False
 
-    def edit_file(self, mode, encode=False):
+    def edit_file(self, filename, mode, encode=False):
         """Writes or appends to file"""
         if encode:
-            with open(self.filename, mode, newline='', encoding="utf-8") as csv_file:
+            with open(filename, mode, newline='', encoding="utf-8") as csv_file:
                 csv_writer = csv.writer(csv_file)
                 csv_writer.writerow([self.checkin, self.website, self.name, self.price, self.accommodation, self.rooms])
         else:
-            with open(self.filename, mode, newline='') as csv_file:
+            with open(filename, mode, newline='') as csv_file:
                 csv_writer = csv.writer(csv_file)
                 if mode == 'w':
-                    csv_writer.writerow(['date', 'website', 'name', '£_price', 'accommodation', 'rooms'])
+                    csv_writer.writerow(['date', 'website', 'name', 'price_GBP', 'accommodation', 'rooms'])
                 elif mode == 'a':
                     csv_writer.writerow([self.checkin, self.website, self.name, self.price, self.accommodation, self.rooms])
 
