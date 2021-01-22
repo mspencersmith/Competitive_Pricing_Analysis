@@ -8,8 +8,12 @@ class Clean:
         string = ''.join(stripped)
         return string
 
-    def only_digits(string):
-        """Returns sting with non digits removed"""
-        if string:
+    def pounds_and_pence(string):
+        """Returns string of pounds or pounds and pence"""
+        pence = re.search(r'(\d+[.]\d{2})', string)
+        if pence:
+            x, y = pence.span()
+            digits = string[x:y]
+        else:
             digits = re.sub(r'(\D+)', '', string)
         return digits
