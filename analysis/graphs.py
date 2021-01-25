@@ -28,7 +28,7 @@ avg.set_xticklabels(months, fontsize='small')
 
 plt.savefig('graphs/average.png', dpi=400, bbox_inches='tight')
 
-minp = avg_all.plot.line(x='date', y=['min'], title='Average Price Per Week (£)')
+minp = avg_all.plot.line(x='date', y=['min'], title='Minimum Price Per Week (£)')
 minp.set_xlabel('Date')
 minp.set_ylabel('Price(£)')
 minp.set_xticks(month_index)
