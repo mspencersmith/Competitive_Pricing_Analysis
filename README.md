@@ -1,4 +1,4 @@
-# Competitive_Pricing_Analysis
+# Self-Catering_Accommodation_Analysis
 
 In this project I collected and analysed pricing data for over 950 properties in Newquay, Cornwall across 3 websites throughout 2021.
 
