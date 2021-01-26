@@ -1,6 +1,6 @@
 # Self-Catering Accommodation Analysis
 
-In this project I collected and analysed pricing data for over 950 properties in Newquay, Cornwall across 3 websites throughout 2021.
+In this project I gathered and analysed pricing data for over 950 properties in Newquay, Cornwall across 3 websites throughout 2021.
 
 ## Technologies
 ### Python
