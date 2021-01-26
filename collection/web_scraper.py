@@ -1,4 +1,5 @@
 import csv
+import json
 import re
 import requests
 
@@ -36,18 +37,20 @@ class WebScraper:
 
     def create_url(self):
         """Creates url for extra pages"""
-        if self.website == 'aspects':
+        if self.website == 'website1':
             self.url = f'{self.url}/page/{self.page}'
-        elif self.website == 'airbnb':
+        elif self.website == 'website2':
             self.url = f'{self.url}&items_offset={self.page}&section_offset=3'
-        elif self.website == 'booking':
-            in_year, in_month, in_day = self.boo_date(self.checkin)
-            out_year, out_month, out_day = self.boo_date(self.checkout)
-            self.url = f'https://www.booking.com/searchresults.en-gb.html?aid=304142&label=gen173nr-1FCAEoggI46AdIM1gEaFCIAQGYAQm4ARfIAQ_YAQHoAQH4AQuIAgGoAgO4Aq7B__4FwAIB0gIkNTIyZjhlMDItNWM3ZC00YzQ5LThlYzAtYmEzN2QyMzk0Zjlj2AIG4AIB&tmpl=searchresults&ac_click_type=b&ac_position=0&checkin_month={in_month}&checkin_monthday={in_day}&checkin_year={in_year}&checkout_month={out_month}&checkout_monthday={out_day}&checkout_year={out_year}&class_interval=1&dest_id=-2604050&dest_type=city&from_sf=1&group_adults=4&group_children=0&iata=NQY&label_click=undef&nflt=ht_id%3D201%3Bht_id%3D220%3Bht_id%3D213%3B&no_rooms=2&order=price&percent_htype_apt=1&raw_dest_type=city&room1=A%2CA&room2=A%2CA&sb_price_type=total&search_selected=1&shw_aparth=1&slp_r_match=0&srpvid=0f5708e2731a0009&ss=Newquay%2C%20Cornwall%2C%20United%20Kingdom&ss_raw=newq&ssb=empty&top_ufis=1&rows=25&offset='
+        elif self.website == 'website3':
+            with open('urls.json') as f:
+                url = json.load(f)
+            in_year, in_month, in_day = self.web3_date(self.checkin)
+            out_year, out_month, out_day = self.web3_date(self.checkout)
+            self.url = url['web3+'].format(in_month=in_month, in_day=in_day, in_year=in_year, out_month=out_month, out_day=out_day, out_year=out_year)
             self.url = f'{self.url}{self.page}'
     
-    def boo_date(self, date):
-        """Sets month and day to correct format for booking.com"""
+    def web3_date(self, date):
+        """Sets month and day to correct format for website3"""
         year = date[:4]
         if date[5] == '0': # Days cannot start with 0
             month = date[6]
@@ -61,7 +64,7 @@ class WebScraper:
 
     def page_check(self, soup):
         """Checks whether page is in web page range"""
-        if self.website == 'airbnb': # Checks if Airbnb page is in range
+        if self.website == 'website2': # Checks if website2 page is in range
             check = '._1h559tl'
             total_pattern = re.compile(r'(\d+)') # Only digits
             for item in soup.select(check):
@@ -72,7 +75,7 @@ class WebScraper:
                 if count > total:
                     self.MorePages = False
         else:
-            if not soup.select(self.block): # Checks if Apects and Booking page is in range
+            if not soup.select(self.block): # Checks if website1 and website3 page is in range
                 self.MorePages = False
 
     def edit_file(self, filename, mode, encode=False):
@@ -94,38 +97,38 @@ class WebScraper:
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0'}
         response = requests.get(self.url, headers=headers)
         soup = BeautifulSoup(response.content, 'lxml')
-        if self.website == 'aspects':
+        if self.website == 'website1':
             self.block = '.property-box-inner'
-        elif self.website == 'airbnb':
+        elif self.website == 'website2':
             self.block = '._8s3ctt'
-        elif self.website == 'booking':
+        elif self.website == 'website3':
             self.block = '.sr_property_block'
         return soup
    
     def get_attr(self, item):
-        if self.website == 'aspects':
-            self.get_attr_asp(item)
-        elif self.website == 'airbnb':
-            self.get_attr_air(item)
-        elif self.website == 'booking':
-            self.get_attr_boo(item)
+        if self.website == 'website1':
+            self.get_attr_1(item)
+        elif self.website == 'website2':
+            self.get_attr_2(item)
+        elif self.website == 'website3':
+            self.get_attr_3(item)
 
-    def get_attr_asp(self, item):
-        """Gets attributes for aspects"""
+    def get_attr_1(self, item):
+        """Gets attributes for website1"""
         self.name = item.select('.property-name')[0].get_text().strip().split('\r')[0]
         self.price = item.select('.property-price')[0].get_text().strip().split(' ')[0]
         self.accommodation = None # No Accommodation type given
         self.rooms = item.select('.property-toptrumps')[0].get_text().strip()
 
-    def get_attr_air(self, item):
+    def get_attr_2(self, item):
         """Gets attributes for air bnb"""
         self.name = item.a['aria-label']
         self.price = item.select('._ebe4pze')[0].get_text().strip().split(' ')[0]
         self.accommodation = item.select('._b14dlit')[0].get_text().strip()
         self.rooms = item.select('._kqh46o')[0].get_text().strip()
 
-    def get_attr_boo(self, item):
-        """Gets attributes for booking.com"""
+    def get_attr_3(self, item):
+        """Gets attributes for website3.com"""
         self.name = item.select('.sr-hotel__name')[0].get_text().strip()
         self.price = item.select('.bui-price-display__value')[0].get_text().strip()
         self.accommodation = item.select('.room_link')[0].get_text().strip()
