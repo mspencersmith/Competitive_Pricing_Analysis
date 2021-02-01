@@ -15,4 +15,6 @@ Firstly, I created an automated web scraper (web_scaper.py, get_data.py) using B
 After collection I used Pandas to clean the dataset removing any unreadable characters, outliers that were clear mistakes, and editing non-numerical prices as seen in clean_data.py and clean.py. Once the data set was cleaned I used Pandas to aggregate the data (average.py) and used Matplotlib to plot the findings as seen below (graphs.py).
 
 ![Average Price Per Week (£)](/analysis/graphs/average.png)
+![Average Price Per Week (£)](/analysis/graphs/average_bedrooms.png)
 ![Average Price Per Week (£)](/analysis/graphs/min.png)
+![Average Price Per Week (£)](/analysis/graphs/minimum_bedrooms.png)
