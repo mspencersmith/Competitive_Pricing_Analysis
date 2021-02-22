@@ -23,7 +23,7 @@ month_index = dates['month_ind']
 
 plt.style.use('seaborn')
 
-def graph(col, title, output=False):
+def bed_graph(col, title, output=False):
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(1,1,1)
 
@@ -44,6 +44,6 @@ def graph(col, title, output=False):
         plt.savefig(output, dpi=400, bbox_inches='tight')
     plt.show()
 
-graph('median', 'Median Price of 2-5 Bedroom Accommodation', 'graphs/average_bedrooms.png')
-graph('min', 'Minimum Price of 2-5 Bedroom Accommodation', 'graphs/minimum_bedrooms.png')
-graph('max', 'Maximum Price of 2-5 Bedroom Accommodation', 'graphs/maximum_bedrooms.png')
+bed_graph('median', 'Median Price of 2-5 Bedroom Accommodation', 'graphs/average_bedrooms.png')
+bed_graph('min', 'Minimum Price of 2-5 Bedroom Accommodation', 'graphs/minimum_bedrooms.png')
+bed_graph('max', 'Maximum Price of 2-5 Bedroom Accommodation', 'graphs/maximum_bedrooms.png')

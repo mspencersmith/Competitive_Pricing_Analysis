@@ -19,20 +19,15 @@ plt.style.use('seaborn')
 
 print(avg_all)
 
-avg = avg_all.plot.line(x='date', y=['mean', 'median'], title='Average Price Per Week (£)')
-avg.set_xlabel('Date')
-avg.set_ylabel('Price(£)')
-avg.set_xticks(month_index)
-avg.set_xticklabels(months, fontsize='small')
+def graph(col, title, output=False):
+    avg = avg_all.plot.line(x='date', y=col, title=title)
+    avg.set_xlabel('Date')
+    avg.set_ylabel('Price(£)')
+    avg.set_xticks(month_index)
+    avg.set_xticklabels(months, fontsize='small')
+    if output:
+        plt.savefig(output, dpi=400, bbox_inches='tight')
+    plt.show()
 
-# plt.savefig('graphs/average.png', dpi=400, bbox_inches='tight')
-
-minp = avg_all.plot.line(x='date', y=['max', 'min'], title='Minimum and Maximum Price Per Week (£)')
-minp.set_xlabel('Date')
-minp.set_ylabel('Price(£)')
-minp.set_xticks(month_index)
-minp.set_xticklabels(months, fontsize='small')
-
-# plt.savefig('graphs/min.png', dpi=400, bbox_inches='tight')
-
-plt.show()
+graph(['median'], 'Average Price Per Week (£)', 'graphs/average.png')
+graph(['max', 'median', 'min'], 'Maximum, Median, and Minimum Price Per Week', 'graphs/max_med_min.png')
