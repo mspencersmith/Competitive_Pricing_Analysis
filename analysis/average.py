@@ -8,7 +8,7 @@ def avg_all(file, out_file=None):
     """Returns average price of all properties"""
     df = get_df(file)
     date = df.groupby(['date'])
-    average_price = average(date['price_GBP'])
+    average_price = average(date['price'])
     if out_file:
         create_csv(out_file, average_price)
 
@@ -19,7 +19,7 @@ def avg_rooms(file, rooms, out_file=None):
     filt = df['rooms'].str.contains(f'{rooms} bedrooms', na=False)
     rooms = df[filt]
     date = rooms.groupby(['date'])
-    average_price = average(date['price_GBP'])
+    average_price = average(date['price'])
     if out_file:
         create_csv(out_file, average_price)
 

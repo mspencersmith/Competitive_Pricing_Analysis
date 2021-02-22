@@ -25,16 +25,14 @@ avg.set_ylabel('Price(£)')
 avg.set_xticks(month_index)
 avg.set_xticklabels(months, fontsize='small')
 
-plt.savefig('graphs/average.png', dpi=400, bbox_inches='tight')
+# plt.savefig('graphs/average.png', dpi=400, bbox_inches='tight')
 
-minp = avg_all.plot.line(x='date', y=['min'], title='Minimum Price Per Week (£)')
+minp = avg_all.plot.line(x='date', y=['max', 'min'], title='Minimum and Maximum Price Per Week (£)')
 minp.set_xlabel('Date')
 minp.set_ylabel('Price(£)')
 minp.set_xticks(month_index)
 minp.set_xticklabels(months, fontsize='small')
 
-plt.savefig('graphs/min.png', dpi=400, bbox_inches='tight')
+# plt.savefig('graphs/min.png', dpi=400, bbox_inches='tight')
 
 plt.show()
-
-

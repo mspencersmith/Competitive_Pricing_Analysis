@@ -17,7 +17,7 @@ clean = df.applymap(cd.remove_non_ascii, na_action='ignore')
 clean['price'] = clean['price'].map(cd.pounds_and_pence, na_action='ignore') 
 
 clean.boxplot('price')
-plt.savefig('graphs/price_boxplot.png', dpi=400, bbox_inches='tight')
+# plt.savefig('graphs/price_boxplot.png', dpi=400, bbox_inches='tight')
 plt.show()
 
 checkin_dates = os.path.join(BASE_DIR,'collection/dates.json')
