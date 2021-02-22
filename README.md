@@ -12,9 +12,11 @@ In this project I gathered and analysed pricing data for over 950 properties in 
 Firstly, I created an automated web scraper (web_scaper.py, get_data.py) using BeautifulSoup4, to pull the price, type, and room characteristics of self-catering properties that sleep a minimum of 4 people in Newquay. In total I collected over 21,000 data points from the end of January 2021 to the end of December 2021 and saved them to csv format ready for analysis.
 
 ## Cleaning
-After collection I cleaned the dataset removing any unreadable characters, and ensuring the price column only contained numerical values removing any addition characters (clean_data.py and clean.py). I checked for outliers using a boxplot of the prices, as seen below there are prices that are either errors or are out of the scope of affordable accommodation.
+After collection I cleaned the dataset removing any unreadable characters, and ensuring the price column only contained numerical values removing any addition characters (clean_data.py and clean.py). I checked for outliers using a boxplot of the prices, as seen below there are prices that are either errors or are out of the scope of affordable accommodation. I therefore further cleaned the dataset using the interquartlie range for each week. 
 
 ![Boxplot of Price (£)](/analysis/graphs/price_boxplot.png)
+
+
 
 ## Analysis
  Once the data set was cleaned I used Pandas to aggregate the data (average.py) and used Matplotlib to plot the findings as seen below (all_prop_graphs.py, room_graphs.py).
