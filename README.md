@@ -21,7 +21,8 @@ After collection I cleaned the dataset removing any unreadable characters, and e
 ## Analysis
  Once the data set was cleaned I used Pandas to aggregate the data (average.py) and used Matplotlib to plot the findings as seen below (all_prop_graphs.py, room_graphs.py).
 
-![Average Price Per Week (£)](/analysis/graphs/average.png)
-![Average Price Per Week (£)](/analysis/graphs/average_bedrooms.png)
-![Average Price Per Week (£)](/analysis/graphs/min.png)
-![Average Price Per Week (£)](/analysis/graphs/minimum_bedrooms.png)
+![Average Price Per Week(£)](/analysis/graphs/average.png)
+![Maximum, Median, and Minimum Price Per Week(£)](/analysis/graphs/max_med_min.png)
+![Average Price of 2-5 Bedroom Accommodation(£)](/analysis/graphs/average_bedrooms.png)
+![Maximum Price of 2-5 Bedroom Accommodation(£)](/analysis/graphs/maximum_bedrooms.png)
+![Minimum Price of 2-5 Bedroom Accommodation(£)](/analysis/graphs/minimum_bedrooms.png)
