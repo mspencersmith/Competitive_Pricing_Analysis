@@ -22,6 +22,9 @@ After collection I cleaned the dataset removing any unreadable characters, and e
  Once the data set was cleaned I used Pandas to aggregate the data (average.py) and used Matplotlib to plot the findings as seen below (all_prop_graphs.py, room_graphs.py).
 
 ![Average Price Per Week(£)](/analysis/graphs/average.png)
+
+As you can see from the graph the average price peaks in August and you can find the cheapest prices in November. If you are looking for a summer holiday and price is a limiting factor then it would be best to plan your holiday in the middle of June before the prices start trending towards the peak.
+
 ![Maximum, Median, and Minimum Price Per Week(£)](/analysis/graphs/max_med_min.png)
 ![Average Price of 2-5 Bedroom Accommodation(£)](/analysis/graphs/average_bedrooms.png)
 ![Maximum Price of 2-5 Bedroom Accommodation(£)](/analysis/graphs/maximum_bedrooms.png)
