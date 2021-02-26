@@ -29,3 +29,4 @@ This graph shows that as you would expect in general the more bedrooms a propert
 
 
 ![Minimum Price of 2-5 Bedroom Accommodation(£)](/analysis/graphs/minimum_bedrooms.png)
+This graph shows the minimum price you can expect to pay for 2-5 bedroom properties throughout 2021. 
