@@ -25,5 +25,7 @@ Once the data set was cleaned I used Pandas to aggregate the data (average.py) a
 As you can see from the graph the average price peaks in August and you can find the cheapest prices in November. If you are looking for a summer holiday and price is a limiting factor then it would be best to plan your holiday in June before the prices start trending towards the peak.
 
 ![Average Price of 2-5 Bedroom Accommodation(£)](/analysis/graphs/average_bedrooms.png)
-![Maximum Price of 2-5 Bedroom Accommodation(£)](/analysis/graphs/maximum_bedrooms.png)
+This graph shows that as you would expect in general the more bedrooms a property has the more expensive it is. However this does not hold true for 5 bedroom properties which are similar prices to 4 bedroom properties. In fact if you plan your holiday in early March or early April you can find 5 bedroom properties for the same price as 3 bedroom properties, so if you are travelling with a larger group this might be the most cost efficient time to travel.
+
+
 ![Minimum Price of 2-5 Bedroom Accommodation(£)](/analysis/graphs/minimum_bedrooms.png)
