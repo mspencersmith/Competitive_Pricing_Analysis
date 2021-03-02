@@ -32,6 +32,7 @@ def count_rooms(file, out_file=None):
         bed_count = pd.merge(bed_count, count, left_index=True,
             right_index=True, how='outer', suffixes=(None, f'_{i}'))
     bed_count.rename(columns = {'rooms':'rooms_1'}, inplace=True)
+    bed_count.index.name = 'date'
     bed_count.fillna(0, inplace=True)
     if out_file:
         create_csv(out_file, bed_count)
