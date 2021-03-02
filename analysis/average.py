@@ -11,17 +11,37 @@ def avg_all(file, out_file=None):
     average_price = average(date['price'])
     if out_file:
         create_csv(out_file, average_price)
+    return average_price
 
-def avg_rooms(file, rooms, out_file=None):
+def avg_rooms(file, num, out_file=None):
     """Returns average price of properties of given room size"""
     df = get_df(file)
-    df['rooms'] = df['rooms'].str.lower()
-    filt = df['rooms'].str.contains(f'{rooms} bedrooms', na=False)
-    rooms = df[filt]
+    rooms = group_rooms(df, num)
     date = rooms.groupby(['date'])
     average_price = average(date['price'])
     if out_file:
         create_csv(out_file, average_price)
+
+def count_rooms(file, out_file=None): 
+    df = get_df(file)
+    bed_count = pd.DataFrame(index=df['date'].unique())
+    for i in range(1, 7):
+        rooms = group_rooms(df, i)
+        date = rooms.groupby(['date'])
+        count = date['rooms'].count()
+        bed_count = pd.merge(bed_count, count, left_index=True,
+            right_index=True, how='outer', suffixes=(None, f'_{i}'))
+    bed_count.rename(columns = {'rooms':'rooms_1'}, inplace=True)
+    bed_count.fillna(0, inplace=True)
+    if out_file:
+        create_csv(out_file, bed_count)
+    return bed_count
+
+def group_rooms(df, num):
+    df['rooms'] = df['rooms'].str.lower()
+    filt = df['rooms'].str.contains(f'{num} bedrooms', na=False)
+    rooms = df[filt]
+    return rooms
 
 def get_df(file):
     """Joins path and opens csv file"""

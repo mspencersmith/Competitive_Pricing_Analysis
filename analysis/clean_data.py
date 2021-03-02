@@ -10,6 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 pricing = os.path.join(BASE_DIR,'data/pricing_data.csv')
 df = pd.read_csv(pricing, encoding='unicode_escape')
 
+# Drops rows will all values missing
+df.dropna(how='all', inplace=True)
+
 # Returns the string without non ASCII characters
 clean = df.applymap(cd.remove_non_ascii, na_action='ignore')
 
